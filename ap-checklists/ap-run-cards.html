@@ -1,0 +1,734 @@
+<title>AP Run Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#F1F4F3;
+    --surface:#FFFFFF;
+    --surface-2:#E7ECEA;
+    --ink:#141D1B;
+    --ink-2:#3C4A47;
+    --muted:#6B7B77;
+    --line:#D3DBD8;
+    --line-strong:#B6C2BE;
+    --accent:#0E4F52;
+    --accent-soft:#DCEAE9;
+    --caution:#8F5405;
+    --caution-soft:#F6EBDA;
+    --caution-line:#E0C79B;
+    --critical:#8E2226;
+    --critical-soft:#F7E5E4;
+    --critical-line:#E2B4B2;
+    --done:#2C6349;
+    --done-soft:#DFEDE5;
+    --shadow:0 1px 2px rgba(20,29,27,.06), 0 8px 20px -12px rgba(20,29,27,.18);
+    --step:clamp(15px,1.6vw,16px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#101715;
+      --surface:#18211F;
+      --surface-2:#212B29;
+      --ink:#E8EEEC;
+      --ink-2:#C1CCC9;
+      --muted:#8B9A96;
+      --line:#2C3835;
+      --line-strong:#3D4B48;
+      --accent:#5CB6AE;
+      --accent-soft:#1A2E2E;
+      --caution:#DFA75C;
+      --caution-soft:#2C2519;
+      --caution-line:#4A3C22;
+      --critical:#E58A85;
+      --critical-soft:#2E1D1D;
+      --critical-line:#4C2C2B;
+      --done:#6FB893;
+      --done-soft:#1A2A22;
+      --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 24px -14px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#101715;
+    --surface:#18211F;
+    --surface-2:#212B29;
+    --ink:#E8EEEC;
+    --ink-2:#C1CCC9;
+    --muted:#8B9A96;
+    --line:#2C3835;
+    --line-strong:#3D4B48;
+    --accent:#5CB6AE;
+    --accent-soft:#1A2E2E;
+    --caution:#DFA75C;
+    --caution-soft:#2C2519;
+    --caution-line:#4A3C22;
+    --critical:#E58A85;
+    --critical-soft:#2E1D1D;
+    --critical-line:#4C2C2B;
+    --done:#6FB893;
+    --done-soft:#1A2A22;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 24px -14px rgba(0,0,0,.7);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:var(--step);
+    line-height:1.5;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px 96px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  /* ---- top bar ---- */
+  .bar{
+    position:sticky;top:0;z-index:20;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+  }
+  .bar-in{
+    max-width:640px;margin:0 auto;padding:10px 16px;
+    display:flex;align-items:center;gap:12px;min-height:56px;
+  }
+  .back{
+    appearance:none;border:1px solid var(--line-strong);background:var(--surface);
+    color:var(--ink);border-radius:8px;padding:8px 12px;font:inherit;
+    font-family:"IBM Plex Mono",monospace;font-size:13px;cursor:pointer;
+    min-height:40px;display:none;align-items:center;gap:6px;flex:none;
+  }
+  .back:hover{border-color:var(--accent)}
+  .bar-title{font-weight:600;font-size:15px;letter-spacing:-.01em;flex:1;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar-count{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);
+    font-variant-numeric:tabular-nums;flex:none}
+
+  /* ---- home ---- */
+  .masthead{padding:26px 0 18px}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  h1{font-size:27px;line-height:1.15;letter-spacing:-.025em;margin:6px 0 8px;text-wrap:balance;font-weight:600}
+  .lede{color:var(--ink-2);margin:0;max-width:56ch}
+  .tip{
+    margin-top:14px;font-size:13.5px;color:var(--muted);
+    display:flex;gap:8px;align-items:baseline;
+  }
+  .tip b{color:var(--ink-2);font-weight:500}
+
+  h2{
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.13em;
+    text-transform:uppercase;color:var(--muted);font-weight:500;
+    margin:34px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line);
+  }
+
+  .cards{display:flex;flex-direction:column;gap:8px}
+  .card-btn{
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;
+    width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
+    border-radius:10px;padding:14px;font:inherit;color:inherit;cursor:pointer;
+    min-height:68px;
+  }
+  .card-btn:hover{border-color:var(--line-strong)}
+  .letter{
+    width:34px;height:34px;border-radius:8px;display:grid;place-items:center;
+    background:var(--accent-soft);color:var(--accent);
+    font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;
+  }
+  .card-btn[data-state="done"] .letter{background:var(--done-soft);color:var(--done)}
+  .card-name{font-weight:600;letter-spacing:-.01em}
+  .card-meta{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
+    letter-spacing:.05em;text-transform:uppercase;margin-top:3px}
+  .card-right{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:12px;
+    color:var(--muted);font-variant-numeric:tabular-nums;flex:none}
+  .pill{
+    display:inline-block;padding:3px 7px;border-radius:5px;font-size:10.5px;
+    letter-spacing:.06em;text-transform:uppercase;font-family:"IBM Plex Mono",monospace;
+  }
+  .pill-open{background:var(--caution-soft);color:var(--caution)}
+  .pill-done{background:var(--done-soft);color:var(--done)}
+  .seq{display:flex;flex-direction:column;gap:8px;position:relative}
+
+  .trigger-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    overflow:hidden;
+  }
+  .trigger-row{
+    display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+    padding:12px 14px;border-bottom:1px solid var(--line);
+  }
+  .trigger-row:last-child{border-bottom:0}
+  .trigger-if{color:var(--ink-2);font-size:14.5px}
+  .trigger-then{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--accent);
+    text-align:right;flex:none;
+  }
+  .trigger-then button{
+    appearance:none;background:none;border:0;padding:0;font:inherit;color:var(--accent);
+    text-decoration:underline;text-underline-offset:3px;cursor:pointer;
+  }
+
+  .never{background:var(--surface);border:1px solid var(--caution-line);border-radius:10px;padding:4px 14px}
+  .never li{
+    list-style:none;padding:11px 0 11px 26px;border-bottom:1px solid var(--line);position:relative;
+    font-size:14.5px;
+  }
+  .never li:last-child{border-bottom:0}
+  .never li::before{
+    content:"";position:absolute;left:0;top:17px;width:9px;height:9px;
+    background:var(--caution);border-radius:2px;
+  }
+  .never ul{margin:0;padding:0}
+
+  .rule{
+    background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:8px;padding:13px 15px;margin-bottom:8px;
+  }
+  .rule h3{font-size:14.5px;margin:0 0 4px;font-weight:600;letter-spacing:-.01em}
+  .rule p{margin:0;font-size:14px;color:var(--ink-2)}
+
+  /* ---- card view ---- */
+  .card-head{padding:22px 0 16px;border-bottom:1px solid var(--line);margin-bottom:4px}
+  .card-head h1{font-size:24px;margin:8px 0 10px}
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+  .badge{
+    font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.07em;
+    text-transform:uppercase;padding:4px 8px;border-radius:5px;
+    background:var(--surface-2);color:var(--ink-2);
+  }
+  .badge-style{background:var(--accent-soft);color:var(--accent)}
+  .howto{margin:12px 0 0;font-size:14px;color:var(--ink-2)}
+
+  .steps{display:flex;flex-direction:column;gap:0;margin-top:8px}
+  .step{
+    display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:start;
+    border-bottom:1px solid var(--line);
+    padding:15px 2px;cursor:pointer;min-height:58px;
+  }
+  .steps .step:last-child{border-bottom:0}
+  .goto{display:inline-block;font:inherit}
+  .box{
+    width:24px;height:24px;border-radius:6px;border:1.5px solid var(--line-strong);
+    background:var(--surface);flex:none;margin-top:1px;display:grid;place-items:center;
+    transition:background .12s ease,border-color .12s ease;
+  }
+  .box svg{width:14px;height:14px;opacity:0;stroke:var(--surface);stroke-width:2.6;
+    fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .step[aria-checked="true"] .box{background:var(--done);border-color:var(--done)}
+  .step[aria-checked="true"] .box svg{opacity:1}
+  .step[aria-checked="true"] .step-text{color:var(--muted)}
+  .step-text{line-height:1.45}
+  .step[data-never="1"] .box{border-color:var(--caution)}
+  .never-tag{
+    display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--caution);
+    border:1px solid var(--caution-line);border-radius:4px;padding:1px 5px;
+    margin-left:6px;vertical-align:1px;white-space:nowrap;
+  }
+  .sub{display:block;font-size:13.5px;color:var(--muted);margin-top:3px}
+  .goto{
+    appearance:none;background:var(--critical-soft);color:var(--critical);
+    border:1px solid var(--critical-line);border-radius:6px;padding:4px 9px;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.04em;
+    cursor:pointer;margin-top:7px;
+  }
+
+  .panel{border-radius:10px;padding:15px;margin:16px 0}
+  .panel h3{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;margin:0 0 8px;font-weight:600;
+  }
+  .panel p{margin:0 0 9px;font-size:14.5px}
+  .panel p:last-child{margin-bottom:0}
+  .panel ul{margin:0;padding-left:18px;font-size:14.5px}
+  .panel li{margin-bottom:5px}
+  .panel-stop{background:var(--critical-soft);border:1px solid var(--critical-line);color:var(--ink)}
+  .panel-stop h3{color:var(--critical)}
+  .panel-note{background:var(--surface);border:1px solid var(--line);color:var(--ink-2)}
+  .panel-note h3{color:var(--muted)}
+
+  .fields{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:6px 14px;margin:14px 0;
+  }
+  .field{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+    padding:9px 0;border-bottom:1px solid var(--line)}
+  .field:last-child{border-bottom:0}
+  .field label{font-size:14px;color:var(--ink-2)}
+  .field input{
+    font-family:"IBM Plex Mono",monospace;font-size:14.5px;text-align:right;
+    background:none;border:0;border-bottom:1px dashed var(--line-strong);
+    color:var(--ink);padding:5px 2px;width:150px;min-height:34px;
+    font-variant-numeric:tabular-nums;
+  }
+  .field input:focus{outline:none;border-bottom-color:var(--accent);border-bottom-style:solid}
+  .field input::placeholder{color:var(--muted);opacity:.7}
+  .recall{
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--accent);
+    background:var(--accent-soft);border-radius:6px;padding:9px 12px;margin:12px 0;
+    font-variant-numeric:tabular-nums;
+  }
+  .recall em{font-style:normal;color:var(--muted)}
+
+  /* ---- editable placeholders ---- */
+  .ph{
+    font-family:"IBM Plex Mono",monospace;font-size:.9em;
+    border-bottom:1.5px dotted var(--accent);color:var(--accent);
+    background:none;border-top:0;border-left:0;border-right:0;padding:0 1px;
+    cursor:pointer;font-weight:500;
+  }
+  .ph.empty{color:var(--muted);border-bottom-color:var(--line-strong)}
+  .ph:focus{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+  .ph-input{
+    font-family:"IBM Plex Mono",monospace;font-size:.92em;color:var(--ink);
+    background:var(--surface);border:1px solid var(--accent);border-radius:5px;
+    padding:3px 6px;min-width:140px;max-width:100%;
+  }
+  .ph-input:focus{outline:none}
+
+  .foot{margin-top:28px;display:flex;flex-direction:column;gap:10px}
+  .reset{
+    appearance:none;background:var(--surface);border:1px solid var(--line-strong);
+    border-radius:9px;padding:14px;font:inherit;font-family:"IBM Plex Mono",monospace;
+    font-size:13px;letter-spacing:.04em;color:var(--ink-2);cursor:pointer;min-height:50px;
+  }
+  .reset:hover{border-color:var(--accent);color:var(--accent)}
+  .foot-note{font-size:13px;color:var(--muted);text-align:center;margin:0}
+
+  .privacy{
+    margin-top:34px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted);line-height:1.55;
+  }
+
+  :where(button,input,[tabindex]):focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  @media (max-width:420px){
+    .field{grid-template-columns:1fr}
+    .field input{text-align:left;width:100%}
+  }
+</style>
+
+<div class="bar">
+  <div class="bar-in">
+    <button class="back" id="back" type="button">← Cards</button>
+    <div class="bar-title" id="barTitle">AP Run Cards</div>
+    <div class="bar-count mono" id="barCount"></div>
+  </div>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var KEY = "ap-run-cards.v1";
+  var store = {checks:{}, ph:{}, fields:{}};
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){ var p = JSON.parse(raw); if(p && typeof p === "object"){
+      store.checks = p.checks || {}; store.ph = p.ph || {}; store.fields = p.fields || {};
+    }}
+  }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+
+  var CARDS = [
+    {
+      id:"A", title:"Invoice review gate", style:"Do-confirm", cadence:"Per invoice",
+      howto:"Review the invoice your normal way. Then stop at the same moment every time — [before you change status to Approved for Payment] — and confirm these.",
+      steps:[
+        {t:"<b>Duplicate check.</b> Same vendor + same invoice number.", sub:"Then also same vendor + same amount + near date. Duplicates slip through when the number is keyed differently — [with or without dashes and leading zeros].", never:true},
+        {t:"<b>Approval present</b>, and the approver has authority for this amount.", sub:"Limits: [your approval matrix]", never:true},
+        {t:"<b>Not on hold, not in dispute.</b>", sub:"Check in [where do you check this?]"},
+        {t:"<b>Open credit memos</b> for this vendor checked, and applied or netted."},
+        {t:"<b>Terms and due date</b> match the vendor master — not just what the invoice says.", sub:"Note any early-pay discount and the date it expires."},
+        {t:"<b>Remit-to on the invoice matches the vendor master.</b>", sub:"If it differs in any way, stop. Do not fix it inline.", never:true, goto:"E", gotoLabel:"Any difference → run Card E"},
+        {t:"<b>Correct entity or company code.</b>", sub:"[If you have more than one]"},
+        {t:"[Add your own step here]", sub:"[And here — especially anything upstream gets wrong often enough that you catch it]"},
+        {t:"Set status to [your ready-to-schedule status]."}
+      ],
+      panels:[]
+    },
+    {
+      id:"B", title:"Run build", style:"Read-do", cadence:"Per run",
+      howto:"Read each step, then do it. Run cadence: [e.g. every Tuesday and Friday].",
+      steps:[
+        {t:"Pull the payment proposal for [your date range]."},
+        {t:"<b>Pull-forward check.</b> Anything due before the <em>next</em> run after this one has to go in this run.", sub:"Compare due dates against the next run date, not today."},
+        {t:"<b>Discount check.</b> Any early-pay discount expiring before the next run.", sub:"A lost discount is a silent error — nobody reports it."},
+        {t:"<b>Exclusions.</b> Remove anything on hold, in dispute, pending vendor verification, or missing approval."},
+        {t:"<b>Credit memos applied</b>, so vendors net correctly instead of paying gross."},
+        {t:"<b>Payment method per vendor</b> is correct — [ACH / check / wire / virtual card].", sub:"Watch for any vendor with more than one active method. That is how one invoice goes out twice by two channels."},
+        {t:"[Your funding or cash check — do you confirm available funds, or hand a total to Treasury?]"},
+        {t:"<b>Write down the batch total and the item count</b> below, then park the run in [your built-not-released state].", sub:"These live outside the payment system on purpose. You reconcile against them in Card C.", never:true}
+      ],
+      fields:[
+        {k:"b_date", label:"Run date", ph:"__ / __ / ____"},
+        {k:"b_total", label:"Batch total", ph:"0.00"},
+        {k:"b_count", label:"Item count", ph:"0"}
+      ],
+      panels:[]
+    },
+    {
+      id:"C", title:"Release", style:"Read-do", cadence:"Per run",
+      howto:"The shortest and strictest card. Don’t do this one from memory, and don’t do it while doing anything else.",
+      panelsTop:[{
+        kind:"stop", h:"The re-transmit rule",
+        body:"<p><b>If you were interrupted and you are not certain the file went out, do not re-send.</b></p><p>Open the bank portal and look at today’s activity. The bank’s record is the only source of truth. Your memory of the last ten minutes is not — and re-sending duplicates every payment in the run.</p>"
+      }],
+      recall:true,
+      steps:[
+        {t:"<b>Batch total matches</b> the figure recorded in Card B.", sub:"If it doesn’t match, stop and find out why. Do not adjust the written figure to match the screen.", never:true},
+        {t:"<b>Item count matches</b> the figure recorded in Card B.", never:true},
+        {t:"<b>Funding account</b> is [correct account], not [the one it gets confused with].", never:true},
+        {t:"<b>Effective / value date</b> is correct."},
+        {t:"<b>Second review and release</b> by [who? — if nobody, see the note below]."},
+        {t:"<b>Transmit.</b>"},
+        {t:"<b>Capture the bank confirmation</b> — reference, timestamp, screenshot. Save to [where].", never:true},
+        {t:"Positive pay file uploaded. [If applicable]"},
+        {t:"Check stock sequence recorded. [If applicable]"}
+      ],
+      fields:[
+        {k:"c_ref", label:"Confirmation ref", ph:"—"},
+        {k:"c_time", label:"Time sent", ph:"__:__"},
+        {k:"c_checks", label:"Check stock from / to", ph:"____ – ____"}
+      ],
+      panels:[{
+        kind:"note", h:"If you are in sole control",
+        body:"<p>Building <em>and</em> releasing runs with nobody else in the loop is a standard segregation-of-duties gap. It is worth raising with your manager, and it is not yours to solve alone.</p><p>Until then, put real time between the two steps: build the run, do something else, come back to release it. The gap is a partial substitute for the second pair of eyes.</p>"
+      }]
+    },
+    {
+      id:"D", title:"Post-run", style:"Read-do", cadence:"Same day as the run",
+      howto:"These are the quiet failures nobody notices for a month. Nothing here can double-send money, so it is safe to be interrupted — just finish it before end of day.",
+      steps:[
+        {t:"Confirmation filed in [where]."},
+        {t:"<b>Payment statuses updated</b> in [your system]. Nothing left sitting in released limbo."},
+        {t:"<b>Remittance advice sent</b> to vendors. [Automatic, or manual — how?]"},
+        {t:"Run reconciled to the bank. [Same day or next day?]"},
+        {t:"<b>Rejects and returns worked the same day</b> — not when you get to it.", sub:"A returned ACH that sits is a vendor who thinks they were paid and wasn’t. Run [your returns procedure]."},
+        {t:"<b>Re-check the hold pile.</b> Anything excluded in Card B is still correctly parked and hasn’t quietly aged past due.", sub:"[How do you re-check it?]"},
+        {t:"[Add anything your close needs from you at run time rather than at month end]"}
+      ],
+      panels:[]
+    },
+    {
+      id:"E", title:"Vendor bank or remit-to change", style:"Read-do", cadence:"Triggered, never scheduled",
+      howto:"Trigger: any new vendor, or any change to remit-to address, bank account or routing number — however it arrives, and however routine it looks.",
+      panelsTop:[{
+        kind:"stop", h:"Why this card is rigid",
+        body:"<p>This is the highest-consequence, lowest-frequency thing you touch. Business email compromise enters accounts payable almost entirely at this step, and it works precisely because the request arrives when you are busy and looks completely normal.</p><p><b>Urgency in the request is a warning sign, not a reason to hurry.</b></p>"
+      }],
+      steps:[
+        {t:"<b>Hold all payments to this vendor</b> until this card is finished.", never:true},
+        {t:"<b>Verify by phone</b>, using a number already on file in the vendor master or on a prior invoice.", sub:"Never a number from the email, the attachment, or the signature block requesting the change.", never:true},
+        {t:"Speak to a <b>known contact</b>, or someone whose identity you can confirm independently.", never:true},
+        {t:"<b>Read the new digits back to them.</b>", sub:"Don’t ask “did you send a change?” Ask them to state the account.", never:true},
+        {t:"<b>Second person confirms</b> the change before it is entered. [Who?]", never:true},
+        {t:"Document the verification below."},
+        {t:"Enter the change in [your system]."},
+        {t:"<b>Hold the vendor’s next payment one cycle</b>, then release. [Or your policy]", never:true},
+        {t:"File the documentation in [where]."}
+      ],
+      fields:[
+        {k:"e_vendor", label:"Vendor", ph:"—"},
+        {k:"e_num", label:"Number called (and its source)", ph:"—"},
+        {k:"e_who", label:"Spoke with", ph:"—"},
+        {k:"e_when", label:"Date / time of call", ph:"—"},
+        {k:"e_second", label:"Second reviewer", ph:"—"}
+      ],
+      panels:[{
+        kind:"stop", h:"Escalate immediately if",
+        body:"<ul><li>The number on file doesn’t work, or goes somewhere unexpected</li><li>The contact is new, or unknown to you</li><li>The request is urgent, or pushes back on being verified</li><li>The email domain differs from the vendor’s usual one, even by a character</li><li>The change arrives right before a large scheduled payment</li></ul><p style=\"margin-top:9px\">Escalate to [who]. Do not process. It is always acceptable to be slow here.</p>"
+      }]
+    }
+  ];
+
+  var TRIGGERS = [
+    {ifs:"New vendor, or a changed remit-to or bank detail", then:"E"},
+    {ifs:"Invoice is on hold or in dispute", then:"[your hold procedure]"},
+    {ifs:"Open credit memo for this vendor", then:"[your credit memo procedure]"},
+    {ifs:"Amount over [$ threshold]", then:"[extra approval]"},
+    {ifs:"Payment returned or rejected by the bank", then:"[your returns procedure]"},
+    {ifs:"Vendor asks for an urgent, off-cycle payment", then:"[your off-cycle procedure]"}
+  ];
+
+  var NEVER_SKIP = [
+    "Duplicate check",
+    "Approval present, and from someone with authority for the amount",
+    "Remit-to matches the vendor master",
+    "Batch total and count reconciled at release",
+    "Funding account correct"
+  ];
+
+  // ---------- helpers ----------
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,44); }
+
+  // Turn [bracketed text] into editable placeholder buttons.
+  function ph(text, cardId){
+    return String(text).replace(/\[([^\]]+)\]/g, function(_, inner){
+      var key = "ph:" + cardId + ":" + slug(inner);
+      var val = store.ph[key];
+      var has = val !== undefined && val !== "";
+      return '<button type="button" class="ph' + (has ? "" : " empty") + '" data-ph="' + key +
+             '" data-default="' + esc(inner) + '">' + esc(has ? val : inner) + "</button>";
+    });
+  }
+
+  function stepKey(cardId, i){ return cardId + ":" + i; }
+  function counts(card){
+    var done = 0;
+    for(var i=0;i<card.steps.length;i++){ if(store.checks[stepKey(card.id,i)]) done++; }
+    return {done:done, total:card.steps.length};
+  }
+
+  var TICK = '<svg viewBox="0 0 20 20" aria-hidden="true"><polyline points="4,10.5 8,14.5 16,6"></polyline></svg>';
+
+  // ---------- views ----------
+  var app = document.getElementById("app");
+  var back = document.getElementById("back");
+  var barTitle = document.getElementById("barTitle");
+  var barCount = document.getElementById("barCount");
+  var view = "home";
+
+  function renderHome(){
+    view = "home";
+    back.style.display = "none";
+    barTitle.textContent = "AP Run Cards";
+    barCount.textContent = "";
+    window.scrollTo(0,0);
+
+    var h = '';
+    h += '<div class="masthead">';
+    h += '<div class="eyebrow">Review · Schedule · Pay</div>';
+    h += '<h1>AP Run Cards</h1>';
+    h += '<p class="lede">Five checklists. Run one at a time, never two. Everything ticked stays ticked if you get pulled away.</p>';
+    h += '<p class="tip"><b>Tap anything dotted</b> to replace it with how it actually works at your shop. It saves on this device.</p>';
+    h += '</div>';
+
+    h += '<h2>The run, in order</h2><div class="seq">';
+    ["A","B","C","D"].forEach(function(id){ h += cardRow(byId(id)); });
+    h += '</div>';
+
+    h += '<h2>Triggered, not scheduled</h2>';
+    h += cardRow(byId("E"));
+
+    h += '<h2>Never skip these</h2>';
+    h += '<div class="never"><ul>';
+    NEVER_SKIP.forEach(function(t){ h += "<li>" + esc(t) + "</li>"; });
+    h += '</ul></div>';
+    h += '<p class="tip" style="margin-top:10px"><b>Everything else can flex</b> on a bad day. These don’t. Replace this list once you know what has actually gone wrong for you.</p>';
+
+    h += '<h2>If you see this</h2><div class="trigger-card">';
+    TRIGGERS.forEach(function(t){
+      var then = t.then === "E"
+        ? '<button type="button" data-open="E">Card E →</button>'
+        : ph(t.then, "triggers");
+      h += '<div class="trigger-row"><div class="trigger-if">' + ph(esc(t.ifs), "triggers") +
+           '</div><div class="trigger-then">' + then + '</div></div>';
+    });
+    h += '</div>';
+
+    h += '<h2>Standing rules</h2>';
+    h += '<div class="rule"><h3>Status lives in the system, not in your head</h3><p>Every invoice sits in exactly one named state at all times. If you get pulled away mid-item, park it in the state it is actually in before you look at anything else. When you come back you never ask “where was I” — you ask the queue.</p></div>';
+    h += '<div class="rule" style="border-left-color:var(--critical)"><h3>Never re-send a payment file from memory</h3><p>If you can’t tell whether a run went out, the bank’s confirmation is the only source of truth. Check bank activity before you touch anything.</p></div>';
+
+    h += '<div class="privacy">Everything you tick or type stays in this browser, on this device — nothing is sent anywhere, and nothing syncs to another device. Clearing your browser data clears it. Treat it as a working checklist, not a system of record.</div>';
+
+    app.innerHTML = h;
+  }
+
+  function cardRow(card){
+    var c = counts(card);
+    var state = c.done === c.total ? "done" : (c.done > 0 ? "open" : "new");
+    var right = state === "done"
+      ? '<span class="pill pill-done">Complete</span>'
+      : state === "open"
+        ? '<span class="pill pill-open">In progress</span>'
+        : '<span class="card-right">' + c.total + " steps</span>";
+    var h = '<button class="card-btn" type="button" data-open="' + card.id + '" data-state="' + state + '">';
+    h += '<span class="letter">' + card.id + "</span>";
+    h += '<span><span class="card-name">' + esc(card.title) + '</span>' +
+         '<span class="card-meta">' + esc(card.style) + " · " + esc(card.cadence) +
+         (state === "open" ? " · " + c.done + "/" + c.total : "") + "</span></span>";
+    h += "<span>" + right + "</span>";
+    h += "</button>";
+    return h;
+  }
+
+  function byId(id){
+    for(var i=0;i<CARDS.length;i++){ if(CARDS[i].id === id) return CARDS[i]; }
+    return null;
+  }
+
+  function renderCard(id){
+    var card = byId(id);
+    if(!card){ renderHome(); return; }
+    view = id;
+    back.style.display = "inline-flex";
+    barTitle.textContent = "Card " + card.id + " — " + card.title;
+    window.scrollTo(0,0);
+
+    var h = '';
+    h += '<div class="card-head">';
+    h += '<div class="badges"><span class="badge badge-style">' + esc(card.style) + '</span><span class="badge">' + esc(card.cadence) + "</span></div>";
+    h += "<h1>" + esc(card.title) + "</h1>";
+    h += '<p class="howto">' + ph(card.howto, card.id) + "</p>";
+    h += "</div>";
+
+    (card.panelsTop || []).forEach(function(p){ h += panel(p, card.id); });
+
+    if(card.recall){
+      var t = store.fields["b_total"], n = store.fields["b_count"], d = store.fields["b_date"];
+      h += '<div class="recall">';
+      if(t || n){
+        h += "Card B recorded" + (d ? " · " + esc(d) : "") + ": <b>" + esc(t || "—") +
+             "</b> over <b>" + esc(n || "—") + "</b> items";
+      }else{
+        h += "<em>Card B has no total or count recorded yet. Go back and write them down first.</em>";
+      }
+      h += "</div>";
+    }
+
+    h += '<div class="steps">';
+    card.steps.forEach(function(s, i){
+      var k = stepKey(card.id, i);
+      var on = !!store.checks[k];
+      h += '<div class="step" role="checkbox" tabindex="0" aria-checked="' + on + '" data-step="' + k + '"' +
+           (s.never ? ' data-never="1"' : "") + ">";
+      h += '<span class="box" aria-hidden="true">' + TICK + "</span>";
+      h += '<span class="step-text">' + ph(s.t, card.id) +
+           (s.never ? '<span class="never-tag">Never skip</span>' : "") +
+           (s.sub ? '<span class="sub">' + ph(s.sub, card.id) + "</span>" : "") +
+           (s.goto ? '<button type="button" class="goto" data-open="' + s.goto + '">' + esc(s.gotoLabel) + "</button>" : "") +
+           "</span>";
+      h += "</div>";
+    });
+    h += "</div>";
+
+    if(card.fields && card.fields.length){
+      h += '<div class="fields">';
+      card.fields.forEach(function(f){
+        var v = store.fields[f.k] || "";
+        h += '<div class="field"><label for="f-' + f.k + '">' + esc(f.label) + "</label>" +
+             '<input id="f-' + f.k + '" data-field="' + f.k + '" value="' + esc(v) +
+             '" placeholder="' + esc(f.ph) + '" autocomplete="off" inputmode="text"></div>';
+      });
+      h += "</div>";
+    }
+
+    (card.panels || []).forEach(function(p){ h += panel(p, card.id); });
+
+    h += '<div class="foot">';
+    h += '<button class="reset" type="button" data-reset="' + card.id + '">Clear ticks — start a new run</button>';
+    h += '<p class="foot-note">Clearing ticks keeps everything you typed in.</p>';
+    h += "</div>";
+
+    app.innerHTML = h;
+    updateCount(card);
+  }
+
+  function panel(p, cardId){
+    return '<div class="panel panel-' + p.kind + '"><h3>' + esc(p.h) + "</h3>" + ph(p.body, cardId) + "</div>";
+  }
+
+  function updateCount(card){
+    var c = counts(card);
+    barCount.textContent = c.done + "/" + c.total;
+    barCount.style.color = c.done === c.total ? "var(--done)" : "var(--muted)";
+  }
+
+  // ---------- interaction ----------
+  document.addEventListener("click", function(ev){
+    var open = ev.target.closest("[data-open]");
+    if(open){ ev.preventDefault(); ev.stopPropagation(); renderCard(open.getAttribute("data-open")); return; }
+
+    var phBtn = ev.target.closest(".ph");
+    if(phBtn){ ev.preventDefault(); ev.stopPropagation(); editPh(phBtn); return; }
+
+    var step = ev.target.closest(".step");
+    if(step){
+      var k = step.getAttribute("data-step");
+      var next = step.getAttribute("aria-checked") !== "true";
+      step.setAttribute("aria-checked", String(next));
+      if(next){ store.checks[k] = 1; } else { delete store.checks[k]; }
+      save();
+      updateCount(byId(view));
+      return;
+    }
+
+    var reset = ev.target.closest("[data-reset]");
+    if(reset){
+      var id = reset.getAttribute("data-reset");
+      if(window.confirm("Clear every tick on Card " + id + "? Anything you typed in stays.")){
+        Object.keys(store.checks).forEach(function(k){
+          if(k.indexOf(id + ":") === 0) delete store.checks[k];
+        });
+        save();
+        renderCard(id);
+      }
+      return;
+    }
+  });
+
+  document.addEventListener("keydown", function(ev){
+    if(ev.key !== " " && ev.key !== "Enter") return;
+    var step = ev.target.closest && ev.target.closest(".step[data-step]");
+    if(!step || step !== ev.target) return;
+    ev.preventDefault();
+    step.click();
+  });
+
+  back.addEventListener("click", renderHome);
+
+  document.addEventListener("input", function(ev){
+    var f = ev.target.getAttribute && ev.target.getAttribute("data-field");
+    if(!f) return;
+    store.fields[f] = ev.target.value;
+    save();
+  });
+
+  function editPh(btn){
+    var key = btn.getAttribute("data-ph");
+    var def = btn.getAttribute("data-default");
+    var current = store.ph[key] || "";
+    var input = document.createElement("input");
+    input.type = "text";
+    input.className = "ph-input";
+    input.value = current;
+    input.placeholder = def;
+    input.setAttribute("aria-label", "Fill in: " + def);
+    input.size = Math.max(14, Math.min(40, def.length));
+    btn.replaceWith(input);
+    input.focus();
+    input.select();
+
+    var done = false;
+    function commit(){
+      if(done) return;
+      done = true;
+      var v = input.value.trim();
+      if(v){ store.ph[key] = v; } else { delete store.ph[key]; }
+      save();
+      var has = !!v;
+      var nb = document.createElement("button");
+      nb.type = "button";
+      nb.className = "ph" + (has ? "" : " empty");
+      nb.setAttribute("data-ph", key);
+      nb.setAttribute("data-default", def);
+      nb.textContent = has ? v : def;
+      input.replaceWith(nb);
+    }
+    input.addEventListener("blur", commit);
+    input.addEventListener("keydown", function(e){
+      if(e.key === "Enter"){ e.preventDefault(); commit(); }
+      else if(e.key === "Escape"){ input.value = current; commit(); }
+    });
+  }
+
+  renderHome();
+})();
+</script>
